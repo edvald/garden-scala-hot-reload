@@ -1,0 +1,23 @@
+kind: Module
+name: hot-reload-test
+description: Scala hot reload example
+type: container
+
+services:
+  - name: hot-reload-test
+    ports:
+      - name: http
+        containerPort: 8080
+    ingresses:
+      - path: /
+        port: http
+    command: [sbt, run]
+    healthCheck:
+      httpGet:
+        path: /hello/sir
+        port: http
+    devMode:
+      command: [sbt, "~reStart"]
+      sync:
+        - source: src
+          target: /app/src

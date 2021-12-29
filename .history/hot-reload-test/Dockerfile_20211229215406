@@ -1,0 +1,7 @@
+FROM broadinstitute/scala-baseimage:jdk11-2.12.12-1.4.9
+
+WORKDIR /app
+
+ADD project *.sbt src /app/
+
+RUN sbt compile

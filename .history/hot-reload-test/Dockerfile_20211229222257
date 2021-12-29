@@ -1,0 +1,22 @@
+FROM adoptopenjdk:15-jdk-hotspot
+
+# Setup adapted from https://github.com/hseeberger/scala-sbt/blob/master/debian/Dockerfile
+RUN \
+  apt-get update -q && \
+  apt-get upgrade -qq && \
+  apt-get install -y git && \
+  rm -rf /var/lib/apt/lists/*
+
+# Set up coursier, sbt, scala
+RUN \
+  cd /usr/local/bin && \
+  curl -fLo cs https://git.io/coursier-cli-"$(uname | tr LD ld)" && \
+  chmod +x cs && \
+  ./cs setup -y --dir /usr/share/coursier && \
+  ln -s /usr/share/coursier/bin/* /usr/local/bin
+
+WORKDIR /app
+
+ADD project *.sbt src /app/
+
+RUN sbt compile

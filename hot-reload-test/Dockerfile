@@ -1,0 +1,26 @@
+FROM adoptopenjdk:15-jdk-hotspot
+
+RUN \
+  apt-get update -q && \
+  apt-get upgrade -qq && \
+  apt-get install -y git && \
+  rm -rf /var/lib/apt/lists/*
+
+# Set up coursier, sbt, scala
+RUN \
+  mkdir -p /tmp/cs && \
+  cd /tmp/cs && \
+  curl -fLo cs https://git.io/coursier-cli-"$(uname | tr LD ld)" && \
+  chmod +x cs && \
+  ./cs setup -y --dir /usr/share/coursier && \
+  ln -s /usr/share/coursier/* /usr/local/bin && \
+  sbt about && \
+  rm -rf /tmp/cs
+
+WORKDIR /app
+
+ADD *.sbt /app/
+ADD project /app/project
+ADD src /app/src
+
+RUN sbt compile

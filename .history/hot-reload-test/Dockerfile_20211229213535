@@ -1,0 +1,5 @@
+FROM broadinstitute/scala-baseimage:jdk11-2.13.5-1.4.7
+
+ADD project /app/project
+ADD src /app
+ADD *.sbt /app
